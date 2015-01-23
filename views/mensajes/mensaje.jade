@@ -1,0 +1,10 @@
+﻿extends ../layout
+block content
+  h1 Mensaje
+  -if(mensaje)
+    h2= mensaje.asunto
+    div= mensaje.mensaje
+  -else
+    p Mensaje no encontrado
+  p
+    a(href="/enviar_mensaje") Volver atrás

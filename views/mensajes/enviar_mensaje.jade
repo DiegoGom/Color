@@ -1,0 +1,17 @@
+extends ../layout
+block content
+  h1 Enviar mensaje
+  form(method="post", action="/enviar_mensaje")
+    label Asunto
+    br
+    input(type="text", name="asunto")
+    br
+    label Mensaje
+    br
+    textarea(cols="40", rows="10", name="mensaje")
+    br
+    input(type="submit", value="Enviar mensaje")
+  ul
+    -for (i in lista)
+      li
+        a(href="/mensaje/#{i}") #{lista[i].asunto}
