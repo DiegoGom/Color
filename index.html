@@ -2,54 +2,36 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Chat room</title>      
+  <title>Color</title>      
 </head>
-<body id= "list-msgs">
+<body>
+
   <h3>Cambia el color de la pantalla:</h3>
-  
   <textarea id="new-msg" cols="30" rows="5" placeholder="Nuevo color"></textarea>
   
   <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
   <script src="/socket.io/socket.io.js"></script>
+
   <script>
-    var socket = io(); // Inicializamos socketIO en el cliente
+    var socket = io.connect();
+    var sessionId = '';
 
-    var sessionId= '';
-
-    
-    /**
-     * Listener para el evento 'chat message'
-     *   Notese que es el mismo evento que se envia 
-     *   desde el servidor.
-     * Agregamos el mensage entrante a la lista.
-     */
-    socket.on('chat message', function (data) {
-     
-     if(data.id != sessionId){
-
-      $('#list-msgs').css({'background':data.msg});
-      console.log(data);
-     }
-
-     
+    socket.on('envio', function (data) { 
+      if(data.id != sessionId){
+        $('body').css({'background':data.msg});
+      }
     });
     
     socket.on('connect', function(){
       sessionId = socket.io.engine.id;
-      socket.emit('newUser',{id:sessionId});
+      socket.emit('conexion',{id:sessionId});
       console.log("IdUser:"+sessionId);
     });
 
-
-    /**
-     * Emitimos un evento de tipo 'chat message' cada vez
-     * que se presiona 'Enter' en el textarea y enviamos
-     * su contenido como mensaje.
-     */
     $('#new-msg').keyup(function (evt) {
       if (evt.keyCode === 13 ) {
-        socket.emit('chat message',{id:sessionId,msg: $('#new-msg').val()}
-        );
+        var mensaje = $('#new-msg').val().replace(/(\r\n|\n|\r)/gm,"");
+        socket.emit('envio', { id:sessionId, msg:mensaje });
         $('#new-msg').val('');
       }
     });
