@@ -1,2 +1,2 @@
 # Color
-Change Color backgraound
+Change Color background
