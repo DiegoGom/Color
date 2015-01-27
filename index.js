@@ -4,8 +4,9 @@ var io = require('socket.io')(server);
 var _ = require('underscore');
 var participantes = [];
 
-server.listen(3000,function(){
-  console.log('+++ Servidor Iniciado +++');
+var port =3000;
+server.listen(port,function(){
+  console.log('+++ Servidor Iniciado en el puerto '+port+'+++');
 });
 
 app.get('/', function(req, res) {
