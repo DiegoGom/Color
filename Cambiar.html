@@ -7,46 +7,35 @@
 <body>
 
   <h3>Cambia el color de la pantalla:</h3>
-  <textarea id="new-msg" cols="30" rows="5" placeholder="Nuevo color"></textarea>
-  
-   <button onclick="background('yellow')">Amarillo</button><br>
-   <button onclick="background('red')">rojo</button><br>
-   <button onclick="background('blue')">Azul</button><br>
-   <button onclick="background('green')">Verde</button><br>
 
+  <p><input type="text" name="llave" id="llave" placeholder="Ingresa la llave"></p> 
+  <p><input type="text" name="color" id="color" placeholder="Ingresa el color"></p> 
+
+  <span style="color:red;"></span>
 
   <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
   <script src="/socket.io/socket.io.js"></script>
 
   <script>
     var socket = io.connect();
-    var sessionId = '';
-
-    socket.on('envio', function (data) { 
-      if(data.id != sessionId){
-        $('body').css({'background':data.msg});
-      }
-    });
     
-    socket.on('connect', function(){
-      sessionId = socket.io.engine.id;
-      socket.emit('conexion',{id:sessionId});
-      console.log("IdUser:"+sessionId);
-    });
-
-   function background(color){
-socket.emit('envio', { id:sessionId, msg:color });
-
-   }
-
-
-    $('#new-msg').keyup(function (evt) {
+    $('#color').keyup(function (evt) {
       if (evt.keyCode === 13 ) {
-        var mensaje = $('#new-msg').val().replace(/(\r\n|\n|\r)/gm,"");
-        socket.emit('envio', { id:sessionId, msg:mensaje });
-        $('#new-msg').val('');
+        var llave = $('#llave').val();
+        var mensaje = $(this).val().replace(/(\r\n|\n|\r)/gm,"");
+        
+        $('span').text('');
+
+        if(llave.length!=0 && mensaje.length>=3){
+          socket.emit('pair', { key:llave,color:mensaje });
+          $(this).val('');
+        }else{
+          $('span').text('faltan algunos valores');
+        }
+
       }
     });
+
   </script>
 </body>
 </html>

@@ -4,9 +4,8 @@ var io = require('socket.io')(server);
 var _ = require('underscore');
 var participantes = [];
 
-var port =3000;
-server.listen(port,function(){
-  console.log('+++ Servidor Iniciado en el puerto '+port+'+++');
+server.listen(80,function(){
+  console.log('+++ Servidor Iniciado +++');
 });
 
 app.get('/', function(req, res) {
@@ -20,13 +19,21 @@ app.get('/cambiar', function(req, res) {
 io.on('connection', function(socket) {
   
   socket.on('envio', function(data) {
-    io.emit('envio', {msg:data.msg,id:socket.id});
+    io.emit('envio', {msg:data.msg,id:socket.id,key:data.key});
     console.log('- El usuario con ID: '+socket.id+' envio el color: '+data.msg);
   });
 
   socket.on('conexion', function(data) {
-    participantes.push({id:data.id});
-    console.log('- Usuario conectado con ID: '+socket.id);
+    participantes.push({id:data.id,key:data.key});
+    console.log('- Usuario conectado con ID: '+data.id);
+  });
+
+  socket.on('pair', function(data) {
+    padre = _.findWhere(participantes,{key:data.key});
+    if(padre!=undefined){
+      io.to(padre.id).emit('envio', {msg:data.color,id:padre.id,key:data.key});
+      console.log('- Se envio el color: '+data.color+' con la llave: '+data.key);
+    }
   });
   
   socket.on('disconnect', function() {

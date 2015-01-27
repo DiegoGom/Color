@@ -7,7 +7,9 @@
 <body>
 
   <h3>Cambia el color de la pantalla:</h3>
-  
+  <textarea id="new-msg" cols="30" rows="5" placeholder="Nuevo color"></textarea>
+
+  <h2></h2>
   
   <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
   <script src="/socket.io/socket.io.js"></script>
@@ -15,28 +17,36 @@
   <script>
     var socket = io.connect();
     var sessionId = '';
+    var llave = make_key();
+
+    $(document).ready(function(){
+      $('h2').text(llave);
+    });
 
     socket.on('envio', function (data) { 
-      if(data.id != sessionId){
+      if(data.key == llave){
         $('body').css({'background':data.msg});
-        console.log('data.id:'+data.id+'');
-        console.log('sessionId:'+sessionId+'');
       }
     });
     
     socket.on('connect', function(){
       sessionId = socket.io.engine.id;
-      socket.emit('conexion',{id:sessionId});
+      socket.emit('conexion',{id:sessionId,key:llave});
       console.log("IdUser:"+sessionId);
     });
 
-    $('#new-msg').keyup(function (evt) {
-      if (evt.keyCode === 13 ) {
-        var mensaje = $('#new-msg').val().replace(/(\r\n|\n|\r)/gm,"");
-        socket.emit('envio', { id:sessionId, msg:mensaje });
-        $('#new-msg').val('');
-      }
-    });
+    function make_key(){
+      var text = "";
+      var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+      for( var i=0; i < 5; i++ )
+          text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+      return text;
+    }
   </script>
+
+
+
 </body>
 </html>
