@@ -6,11 +6,12 @@
 </head>
 <body>
 
-  <h3>Cambia el color de la pantalla:</h3>
-  <textarea id="new-msg" cols="30" rows="5" placeholder="Nuevo color"></textarea>
+  <center><h1>Cambia el color de la pantalla</h1></center><br>
+
 
   <h2></h2>
   
+  <span id="sucess" style="display:none" ><font size="6">Sucess!</font></span>
   <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
   <script src="/socket.io/socket.io.js"></script>
 
@@ -20,13 +21,16 @@
     var llave = make_key();
 
     $(document).ready(function(){
-      $('h2').text(llave);
+      $('h2').text('*Introduce esta llave en tu dispositivo: '+llave);
     });
 
     socket.on('envio', function (data) { 
       if(data.key == llave){
+        $('h2').hide();
+        $('#sucess').show( "slow" );
         $('body').css({'background':data.msg});
       }
+      
     });
     
     socket.on('connect', function(){

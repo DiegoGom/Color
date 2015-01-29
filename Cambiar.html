@@ -8,8 +8,16 @@
 
   <h3>Cambia el color de la pantalla:</h3>
 
-  <p><input type="text" name="llave" id="llave" placeholder="Ingresa la llave"></p> 
-  <p><input type="text" name="color" id="color" placeholder="Ingresa el color"></p> 
+  
+<div id="key">
+
+  <p><label>Codigo de relacion  </label> <input type="text" name="llave" id="llave" maxlength="5" size="5"  placeholder="Ingresa la llave"></p>
+  </div>
+  <div>
+<p>Selecciona el color: 
+  <input type="text" name="color" id="color" placeholder="Ingresa el color"></p><br>
+  </div>
+  
 
   <span style="color:red;"></span>
 
@@ -19,6 +27,7 @@
   <script>
     var socket = io.connect();
     
+
     $('#color').keyup(function (evt) {
       if (evt.keyCode === 13 ) {
         var llave = $('#llave').val();
@@ -29,6 +38,7 @@
         if(llave.length!=0 && mensaje.length>=3){
           socket.emit('pair', { key:llave,color:mensaje });
           $(this).val('');
+          $('#key').hide('1000');
         }else{
           $('span').text('faltan algunos valores');
         }
